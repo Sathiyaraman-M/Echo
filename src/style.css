@@ -1,0 +1,45 @@
+.table {
+  table-layout: auto;
+}
+
+.table th,
+.table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+tr.table-input-row {
+  padding: 0 !important;
+}
+
+tr.table-input-row td.table-input {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+td.table-input .table-cell.form-control, td.table-input .table-cell.form-select {
+  border: none;
+  border-radius: 0;
+}
+
+td.table-input .table-cell.form-control:hover, td.table-input .table-cell.form-select:hover {
+  box-shadow: none;
+}
+
+td.table-input .table-cell.form-control:focus, td.table-input .table-cell.form-select:focus {
+  box-shadow: none;
+}
+
+td.table-row-actions {
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+td.table-row-actions .btn-action {
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 0.7rem !important;
+  padding: 0 !important;
+}
