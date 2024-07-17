@@ -31,14 +31,14 @@ const TaskRow = (props: TaskRowProps) => {
     return (
         <tr className="table-input-row" key={props.index}>
             <td className="table-input">
-                <input type="text" className="table-cell form-control form-control-sm" 
+                <input type="text" className="table-cell form-control form-control-sm"
                        value={props.task.category} onChange={handleCategoryChange} />
             </td>
             <td className="table-input">
-                <input type="text" className="table-cell form-control form-control-sm" 
+                <input type="text" className="table-cell form-control form-control-sm"
                        value={props.task.item} onChange={handleItemChange}/></td>
             <td className="table-input">
-                <select className="table-cell form-select form-select-sm" 
+                <select className="table-cell form-select form-select-sm"
                         value={props.task.status} onChange={handleStatusChange}>
                     <option value="backlog">Backlog</option>
                     <option value="in-progress">In Progress</option>

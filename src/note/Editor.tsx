@@ -1,8 +1,9 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {Status, Task, TaskList} from "../../types/taskList.ts";
 import {dialog} from "@tauri-apps/api";
 import {readTextFile, writeFile} from "@tauri-apps/api/fs";
 import TaskRow from "./TaskRow.tsx";
+import {useHotkeys} from "react-hotkeys-hook";
 
 const Editor = () => {
     
@@ -14,32 +15,33 @@ const Editor = () => {
         tasks: []
     });
     
-    const addRow = () => {
+    const addRow = useCallback(() => {
         const newTask = { category: '', item: '', status: Status.Backlog };
         setTaskList({ ...taskList, tasks: [...taskList.tasks, newTask] });
-    }
+    }, [taskList]);
     
-    const updateRow = (index: number, task: Task) => {
+    const updateRow = useCallback((index: number, task: Task) => {
         const newTasks = [...taskList.tasks];
         newTasks[index] = task;
         setTaskList({ ...taskList, tasks: newTasks });
-    }
+    }, [taskList]);
     
-    const deleteRow = (index: number) => {
+    const deleteRow = useCallback((index: number) => {
         const newTasks = [...taskList.tasks];
         newTasks.splice(index, 1);
         setTaskList({ ...taskList, tasks: newTasks });
-    }
+    }, [taskList]);
     
-    const swapRows = (index1: number, index2: number) => {
+    const swapRows = useCallback((index1: number, index2: number) => {
+        if (index2 < 0 || index2 >= taskList.tasks.length) {
+            return;
+        }
         const newTasks = [...taskList.tasks];
-        const temp = newTasks[index1];
-        newTasks[index1] = newTasks[index2];
-        newTasks[index2] = temp;
+        [newTasks[index1], newTasks[index2]] = [newTasks[index2], newTasks[index1]];
         setTaskList({ ...taskList, tasks: newTasks });
-    }
+    }, [taskList]);
     
-    const openFile = async () => {
+    const openFile = useCallback(async () => {
         const selected = await dialog.open({filters: [{name: 'JSON', extensions: ['json']}], multiple: false}) as string;
         if (selected) {
             const fileContent = await readTextFile(selected);
@@ -51,9 +53,9 @@ const Editor = () => {
                 alert('Invalid JSON file');
             }
         }
-    }
+    }, [taskList]);
     
-    const saveToFile = async () => {
+    const saveToFile = useCallback(async () => {
         if (!saveFileName) {
             const selected = await dialog.save({filters: [{name: 'JSON', extensions: ['json']}]});
             if (selected) {
@@ -67,7 +69,22 @@ const Editor = () => {
             const jsonData = JSON.stringify(taskList.tasks, null, 2);
             await writeFile({path: saveFileName, contents: jsonData});
         }
-    }
+    }, [taskList, saveFileName]);
+
+    useHotkeys('ctrl+n', (event) => {
+        event.preventDefault();
+        addRow();
+    }, [addRow]);
+
+    useHotkeys('ctrl+o', async (event) => {
+        event.preventDefault();
+        await openFile();
+    }, [openFile]);
+
+    useHotkeys('ctrl+s', async (event) => {
+        event.preventDefault();
+        await saveToFile();
+    }, [saveToFile]);
     
     return (
         <>
@@ -83,7 +100,7 @@ const Editor = () => {
                             <i className="bi bi-folder2-open me-1"></i>
                             Open File
                         </button>
-                        <button className="btn btn-sm btn-secondary" onClick={saveToFile}>
+                        <button className="btn btn-sm btn-success" onClick={saveToFile}>
                             <i className="bi bi-file-earmark-arrow-down me-1"></i>
                             Save To File
                         </button>
@@ -110,7 +127,7 @@ const Editor = () => {
                     {taskList.tasks.map((task, index) => 
                         <TaskRow key={index}
                             index={index} 
-                            task={task} 
+                            task={task}
                             onUpdate={(task) => updateRow(index,  task)} 
                             onDelete={() => deleteRow(index)}
                             moveUp={() => swapRows(index, index - 1)}
