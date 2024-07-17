@@ -1,5 +1,5 @@
 import React from "react";
-import {Status, Task} from "../types/taskList.ts";
+import {Status, Task} from "../../types/taskList.ts";
 
 
 type TaskRowProps = {

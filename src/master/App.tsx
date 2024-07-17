@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {WebviewWindow} from "@tauri-apps/api/window";
-import {TaskList} from "../types/taskList.ts";
-import TaskLists from "./TaskLists.tsx";
+import {TaskList} from "../../types/taskList.ts";
+import TaskLists from "../note/TaskLists.tsx";
 
 const App = () => {
     

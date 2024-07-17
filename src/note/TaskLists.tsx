@@ -1,4 +1,4 @@
-import {TaskList} from "../types/taskList.ts";
+import {TaskList} from "../../types/taskList.ts";
 import React from "react";
 
 type TaskListProps = {

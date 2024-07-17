@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Status, Task, TaskList} from "../types/taskList.ts";
+import {Status, Task, TaskList} from "../../types/taskList.ts";
 import {dialog} from "@tauri-apps/api";
 import {readTextFile, writeFile} from "@tauri-apps/api/fs";
 import TaskRow from "./TaskRow.tsx";
