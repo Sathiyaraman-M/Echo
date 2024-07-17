@@ -36,7 +36,7 @@ const App = () => {
                 <button className="btn btn-info me-2">Import Task List</button>
                 <button className="btn btn-secondary me-2">Export Task Lists</button>
             </div>
-            <TaskLists taskLists={taskLists} onUpdateTaskList={updateTaskList} onDeleteTaskList={deleteTaskList} />
+            <TaskLists taskLists={taskLists} onUpdate={updateTaskList} onDelete={deleteTaskList} />
         </div>
     )
 }

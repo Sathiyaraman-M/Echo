@@ -3,8 +3,8 @@ import React from "react";
 
 type TaskListProps = {
     taskLists: TaskList[];
-    onUpdateTaskList: (taskList: TaskList) => void;
-    onDeleteTaskList: (taskList: TaskList) => void;
+    onUpdate: (taskList: TaskList) => void;
+    onDelete: (taskList: TaskList) => void;
 }
 
 const TaskLists = (props: TaskListProps) => {
@@ -17,7 +17,7 @@ const TaskLists = (props: TaskListProps) => {
                         <div>
                             <button className="btn btn-sm btn-primary me-2">Add Task</button>
                             <button className="btn btn-sm btn-secondary me-2">Export</button>
-                            <button className="btn btn-sm btn-danger" onClick={() => props.onDeleteTaskList(taskList)}>Delete</button>
+                            <button className="btn btn-sm btn-danger" onClick={() => props.onDelete(taskList)}>Delete</button>
                         </div>
                     </div>
                     <div className="card-body">
