@@ -22,6 +22,11 @@ td.table-input .table-cell.form-control, td.table-input .table-cell.form-select 
   border-radius: 0;
 }
 
+td.table-input .table-cell.form-control:focus, td.table-input .table-cell.form-select:focus {
+  border: 1px solid #ced4da;
+  border-radius: 0;
+}
+
 td.table-input .table-cell.form-control:hover, td.table-input .table-cell.form-select:hover {
   box-shadow: none;
 }
