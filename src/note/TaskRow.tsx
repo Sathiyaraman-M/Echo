@@ -1,30 +1,59 @@
-import React from "react";
+import React, {useCallback, useContext} from "react";
 import {Status, Task} from "../../types/taskList.ts";
+import TaskListContext from "./contexts/TaskListContext.tsx";
 
 
 type TaskRowProps = {
     index: number;
     task: Task;
-    onUpdate: (task: Task) => void;
-    onDelete: () => void;
-    moveUp: () => void;
-    moveDown: () => void;
 }
 
 const TaskRow = (props: TaskRowProps) => {
     
+    const {taskList, setTaskList} = useContext(TaskListContext);
+
+    const updateRow = useCallback((task: Task) => {
+        const newTasks = [...taskList.tasks];
+        newTasks[props.index] = task;
+        setTaskList({ ...taskList, tasks: newTasks });
+    }, [taskList]);
+
+    const deleteRow = useCallback(() => {
+        const newTasks = [...taskList.tasks];
+        newTasks.splice(props.index, 1);
+        setTaskList({ ...taskList, tasks: newTasks });
+    }, [taskList]);
+
+    const swapRows = (index1: number, index2: number) => {
+        if (index2 < 0 || index2 >= taskList.tasks.length) {
+            return;
+        }
+        const newTasks = [...taskList.tasks];
+        [newTasks[index1], newTasks[index2]] = [newTasks[index2], newTasks[index1]];
+        setTaskList({ ...taskList, tasks: newTasks });
+    }
+    
+    const moveUp = useCallback(() => {
+        swapRows(props.index, props.index - 1);
+    }, [props.index]);
+    
+    const moveDown = useCallback(() => {
+        swapRows(props.index, props.index + 1);
+    }, [props.index]);
+        
+    
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        props.onUpdate({ ...props.task, category: e.target.value });
+        updateRow({ ...props.task, category: e.target.value });
     }
     
     const handleItemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        props.onUpdate({ ...props.task, item: e.target.value });
+        updateRow({ ...props.task, item: e.target.value });
     }
     
     const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const status = e.target.value;
         if (status === Status.Backlog || status === Status.InProgress || status === Status.Done) {
-            props.onUpdate({ ...props.task, status: status });
+            updateRow({ ...props.task, status: status });
         }
     }
     
@@ -46,13 +75,15 @@ const TaskRow = (props: TaskRowProps) => {
                 </select>
             </td>
             <td className="table-row-actions">
-                <button className="btn btn-sm btn-primary btn-action me-2" onClick={props.moveUp}>
+                <button className={"btn btn-sm btn-action me-2" + `${props.index === 0 ? ' btn-secondary' : ' btn-primary'}`} 
+                        onClick={moveUp} disabled={props.index === 0}>
                     <i className="bi bi-arrow-up"></i>
                 </button>
-                <button className="btn btn-sm btn-primary btn-action me-2" onClick={props.moveDown}>
+                <button className={"btn btn-sm btn-action me-2" + `${props.index === taskList.tasks.length - 1 ? ' btn-secondary' : ' btn-primary'}`} 
+                        onClick={moveDown} disabled={props.index === taskList.tasks.length - 1}>
                     <i className="bi bi-arrow-down"></i>
                 </button>
-                <button className="btn btn-sm btn-danger btn-action me-2" onClick={props.onDelete}>
+                <button className="btn btn-sm btn-danger btn-action me-2" onClick={deleteRow}>
                     <i className="bi bi-trash"></i>
                 </button>
             </td>
