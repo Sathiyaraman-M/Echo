@@ -62,7 +62,7 @@ const Editor = () => {
                             <th>CATEGORY</th>
                             <th>ITEM</th>
                             <th>STATUS</th>
-                            <th>ACTIONS</th>
+                            <th>OPTIONS</th>
                         </tr>
                     </thead>
                     <tbody>

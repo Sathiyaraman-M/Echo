@@ -1,4 +1,4 @@
-import React, {useCallback, useContext} from "react";
+import React, {SyntheticEvent, useCallback, useContext, useState} from "react";
 import {Status, Task} from "../../types/taskList.ts";
 import TaskListContext from "./contexts/TaskListContext.ts";
 import CurrentRowContext from "./contexts/CurrentRowContext.ts";
@@ -13,6 +13,7 @@ const TaskRow = (props: TaskRowProps) => {
 
     const {taskList, setTaskList} = useContext(TaskListContext);
     const {currentRow, setCurrentRow} = useContext(CurrentRowContext);
+    const [dropDownOpen, setDropDownOpen] = useState(false);
 
     const handleFocus = (focusIndex: number) => {
         setCurrentRow({ rowIndex: props.index, focusIndex: focusIndex });    
@@ -44,8 +45,9 @@ const TaskRow = (props: TaskRowProps) => {
             swapRows(currentRow.rowIndex, currentRow.rowIndex - 1);
             setCurrentRow({ ...currentRow, rowIndex: currentRow.rowIndex - 1 });
         }
+        setDropDownOpen(false);
     }, [currentRow, setCurrentRow, props.index]);
-    
+
     const moveDown = useCallback(() => {
         if(currentRow.rowIndex === taskList.tasks.length - 1) {
             return;
@@ -54,6 +56,7 @@ const TaskRow = (props: TaskRowProps) => {
             swapRows(currentRow.rowIndex, currentRow.rowIndex + 1);
             setCurrentRow({ ...currentRow, rowIndex: currentRow.rowIndex + 1 });
         }
+        setDropDownOpen(false);
     }, [currentRow, setCurrentRow, props.index]);
 
     useHotkeys('ctrl+up', (event: KeyboardEvent) => {
@@ -80,6 +83,10 @@ const TaskRow = (props: TaskRowProps) => {
             updateRow({ ...props.task, status: status });
         }
     }
+    
+    const handleSelectOption = (e: SyntheticEvent<HTMLUListElement>) => {
+        e.target.dispatchEvent(new Event('click'))
+    }
 
     return (
         <tr className="table-input-row" key={props.index}>
@@ -99,17 +106,36 @@ const TaskRow = (props: TaskRowProps) => {
                 </select>
             </td>
             <td className="table-row-actions">
-                <button className={"btn btn-sm btn-action me-2" + `${props.index === 0 ? ' btn-secondary' : ' btn-primary'}`} 
-                        onClick={moveUp} disabled={props.index === 0} onFocus={() => handleFocus(3)}>
-                    <i className="bi bi-arrow-up"></i>
-                </button>
-                <button className={"btn btn-sm btn-action me-2" + `${props.index === taskList.tasks.length - 1 ? ' btn-secondary' : ' btn-primary'}`} 
-                        onClick={moveDown} disabled={props.index === taskList.tasks.length - 1} onFocus={() => handleFocus(4)}>
-                    <i className="bi bi-arrow-down"></i>
-                </button>
-                <button className="btn btn-sm btn-danger btn-action me-2" onClick={deleteRow} onFocus={() => handleFocus(5)}>
-                    <i className="bi bi-trash"></i>
-                </button>
+                <div className="d-flex justify-content-start">
+                    <div className="dropdown">
+                        <button className={`btn btn-sm` + `${dropDownOpen ? ' show' : ''}`} 
+                                onClick={() => setDropDownOpen(!dropDownOpen)}
+                                onFocus={() => handleFocus(3)}>
+                            <i className="bi bi-three-dots"></i>
+                        </button>
+                        <ul className={`dropdown-menu dropdown-menu-end` + `${dropDownOpen ? ' show' : ''}`}
+                            onSelect={handleSelectOption}>
+                            <li>
+                                <a itemID={"move-up"} className={`dropdown-item ${props.index == 0 ? 'disabled' : ''}`} 
+                                   onClick={moveUp}>
+                                    <i className="bi bi-arrow-up"></i> Move Up
+                                </a>
+                            </li>
+                            <li>
+                                <a className={`dropdown-item ${props.index == taskList.tasks.length - 1 ? 'disabled' : ''}`} 
+                                   onClick={moveDown}>
+                                    <i className="bi bi-arrow-down"></i> Move Down
+                                </a>
+                            </li>
+                            <div className="dropdown-divider"></div>
+                            <li>
+                                <a className="dropdown-item text-danger" onClick={deleteRow}>
+                                    <i className="bi bi-trash-fill"></i> Delete
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </td>
         </tr>
     )

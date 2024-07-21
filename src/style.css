@@ -1,3 +1,7 @@
+.table-responsive {
+  overflow-x: visible;
+}
+
 .table {
   table-layout: auto;
 }
@@ -47,4 +51,8 @@ td.table-row-actions .btn-action {
   height: 20px !important;
   font-size: 0.7rem !important;
   padding: 0 !important;
+}
+
+.dropdown-menu .dropdown-item {
+  cursor: pointer;
 }
