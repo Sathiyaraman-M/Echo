@@ -72,13 +72,10 @@ const Editor = () => {
                     </tbody>
                 </table>
             </div>
-            <div className="container-fluid">
-                <button className="btn btn-sm btn-primary" onClick={insertNewRow}>
-                    <i className="bi bi-plus-lg me-1"></i>
-                    <i className="bi bi-plus-lg me-1"></i>
-                    Row
-                </button>
-            </div>
+            <button className="btn btn-sm w-100 text-start" onClick={insertNewRow} style={{marginTop: "-2rem"}}>
+                <i className="bi bi-plus-lg me-1"></i>
+                Row
+            </button>
         </>
     );
 }
