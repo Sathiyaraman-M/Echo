@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -8,6 +8,10 @@
 </head>
 <body>
     <div id="root"></div>
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.documentElement.setAttribute('data-bs-theme', localStorage.getItem('theme') || 'light');
+    </script>
     <script type="module" src="/src/note/note.tsx"></script>
 </body>
 </html>

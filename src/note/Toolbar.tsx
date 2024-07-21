@@ -9,6 +9,20 @@ import {WebviewWindow} from "@tauri-apps/api/window";
 const Toolbar = () => {
     const { taskList, setTaskList } = useContext(TaskListContext);
     const { saveFileName, setSaveFileName } = useContext(SaveFileNameContext);
+    const [darkMode, setDarkMode] = useState(false);
+    
+    const handleDarkMode = () => {
+        setDarkMode(!darkMode);
+        localStorage.setItem('theme', darkMode ? 'light' : 'dark');
+    }
+    
+    useEffect(() => {
+        setDarkMode(localStorage.getItem('theme') === 'dark');
+    }, []);
+    
+    useEffect(() => {
+        document.documentElement.setAttribute('data-bs-theme', darkMode ? 'dark' : 'light');
+    }, [darkMode])
     
     const newFile =() => {
         const label = Date.now().toString();
@@ -84,7 +98,7 @@ const Toolbar = () => {
         <div className="container-fluid my-2">
             <div className="d-flex flex-wrap flex-lg-nowrap align-items-center justify-content-between">
                 <h3>Echo JSON Editor</h3>
-                <div className="btn-toolbar gap-1" role="toolbar">
+                <div className="btn-toolbar gap-3" role="toolbar">
                     <div className="btn-group" role="group">
                         <button className="btn btn-sm btn-primary" onClick={newFile}>
                             <i className="bi bi-file-earmark-plus me-2"></i>
@@ -103,6 +117,14 @@ const Toolbar = () => {
                             Save As
                         </button>
                     </div>
+                    {darkMode ? 
+                        <button className="btn btn-sm btn-secondary" onClick={handleDarkMode}>
+                            <i className="bi bi-moon"></i>
+                        </button> :
+                        <button className="btn btn-sm btn-dark" onClick={handleDarkMode}>
+                            <i className="bi bi-sun"></i>
+                        </button>
+                    }
                 </div>
             </div>
         </div>
