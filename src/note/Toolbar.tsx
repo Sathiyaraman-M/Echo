@@ -1,4 +1,4 @@
-import React, {useCallback, useContext} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import {dialog} from "@tauri-apps/api";
 import {readTextFile, writeFile} from "@tauri-apps/api/fs";
 import {useHotkeys} from "react-hotkeys-hook";
@@ -93,6 +93,31 @@ const Toolbar = () => {
         event.preventDefault();
         await saveToFileAs();
     }, [saveToFileAs]);
+    
+    useEffect(() => {
+        if (saveFileName) {
+            sessionStorage.setItem('saveFileName', saveFileName);
+        }
+    }, [saveFileName]);
+    
+    useEffect(() => {
+        if(!saveFileName) {
+            const fileName = sessionStorage.getItem('saveFileName');
+            if (fileName) {
+                setSaveFileName(fileName);
+                if (taskList.tasks.length === 0) {
+                    readTextFile(fileName).then((fileContent) => {
+                        try {
+                            const data = JSON.parse(fileContent);
+                            setTaskList({ ...taskList, tasks: data });
+                        } catch (e) {
+                            alert('Invalid JSON file');
+                        }
+                    });
+                }
+            }
+        }
+    })
 
     return (
         <div className="container-fluid my-2">
